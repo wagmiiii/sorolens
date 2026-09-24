@@ -26,12 +26,12 @@ type healthComponents struct {
 func contractHealthScoreFromStore(h store.ContractHealthScore) contractHealthScoreResponse {
 	return contractHealthScoreResponse{
 		ContractID: h.ContractID,
-		Score:      h.Score,
+		Score:      int32(h.Score),
 		Components: healthComponents{
-			Uptime:      h.ComponentUptime,
-			ErrorRate:   h.ComponentErrorRate,
-			Performance: h.ComponentPerformance,
-			StorageTTL:  h.ComponentStorageTTL,
+			Uptime:      int32(h.ComponentUptime),
+			ErrorRate:   int32(h.ComponentErrorRate),
+			Performance: int32(h.ComponentPerformance),
+			StorageTTL:  int32(h.ComponentStorageTTL),
 		},
 		ComputedAt: h.ComputedAt.UTC().Format(time.RFC3339),
 	}
