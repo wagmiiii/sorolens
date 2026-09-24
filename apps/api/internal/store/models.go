@@ -151,3 +151,28 @@ type ContractUpgrade struct {
 	TxHash    string
 	At        time.Time
 }
+
+// HealthScoreInputs aggregates raw contract signals that feed the composite
+// health score. Zero-value inputs are valid for a contract with no history.
+type HealthScoreInputs struct {
+	HealthyChecks    int64
+	TotalChecks      int64
+	WatchdogStatus   string
+	TotalInvocations int64
+	FailedInvocations int64
+	Activity         []HourlyActivity
+	TotalStorage     int64
+	ExpiringStorage  int64
+}
+
+// ContractHealthScore is the cached composite score (0-100) with per-component
+// sub-scores.
+type ContractHealthScore struct {
+	ContractID              string
+	Score                   float64
+	ComponentUptime         float64
+	ComponentErrorRate      float64
+	ComponentPerformance    float64
+	ComponentStorageTTL     float64
+	ComputedAt              time.Time
+}

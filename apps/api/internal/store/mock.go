@@ -17,10 +17,12 @@ type MockStore struct {
 	globalStats        GlobalStats
 	monitored          map[string]MonitoredContract
 	ListUpgradesErr     error
+	GetHealthScoreErr   error
 	healthChecks       []HealthCheck
 	alerts             []ContractAlert
 	apiKeys            []APIKey
 	contractUpgrades   []ContractUpgrade
+	healthScores      map[string]ContractHealthScore
 	watchlist          map[string]map[string]bool
 	alertSubscriptions []AlertSubscription
 	users              map[string]User
