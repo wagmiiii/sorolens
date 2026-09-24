@@ -20,6 +20,8 @@ type MockStore struct {
 	alerts             []ContractAlert
 	apiKeys            []APIKey
 	watchlist          map[string]map[string]bool
+	contractUpgrades   []ContractUpgrade
+	healthScores      map[string]ContractHealthScore
 	alertSubscriptions []AlertSubscription
 	users              map[string]User
 
@@ -33,6 +35,8 @@ type MockStore struct {
 	ListStorageErr      error
 	GetContractStatsErr error
 	RecentEventsErr     error
+	ListUpgradesErr     error
+	GetHealthScoreErr   error
 	CreateAPIKeyErr     error
 	GetAPIKeyErr        error
 	UpsertUserErr       error
@@ -43,6 +47,8 @@ type MockStore struct {
 func NewMockStore() *MockStore {
 	return &MockStore{
 		contracts:          make(map[string]Contract),
+contractUpgrades:   make([]ContractUpgrade, 0),
+healthScores:      make(map[string]ContractHealthScore),
 		syncStates:         make(map[string]SyncState),
 		monitored:          make(map[string]MonitoredContract),
 		watchlist:          make(map[string]map[string]bool),
