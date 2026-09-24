@@ -21,7 +21,24 @@ export function defaultHandlers(): Record<string, Handler> {
     }),
     "watchdog/alerts": () => ({ status: 200, body: { alerts: [] } }),
     "watchdog/stats": () => ({ status: 200, body: watchdogStats() }),
-    "contracts/": defaultContract,
+    "contracts/health-score": (route) => {
+    const id = new URL(route.request().url()).pathname.split("/").filter(Boolean).pop();
+    return {
+      status: 200,
+      body: {
+        contract_id: id ?? CONTRACT_ID,
+        score: 87,
+        components: {
+          uptime: 99,
+          error_rate: 96,
+          performance: 84,
+          storage_ttl: 71,
+        },
+        computed_at: "2026-07-03T08:00:00Z",
+      },
+    };
+  },
+  "contracts/": defaultContract,
     contracts: () => ({
       status: 200,
       body: { contracts: [contractSummary()], cursor: null, has_more: false },
