@@ -13,20 +13,35 @@ from __future__ import annotations
 from typing import Any
 
 from . import exceptions
+from ._generated.api.alerts import list_alerts
 from ._generated.api.api_keys import (
     create_api_key,
     create_api_key_admin,
+    get_api_key,
     list_api_keys,
     list_api_keys_admin,
     revoke_api_key,
     revoke_api_key_admin,
+    rotate_api_key,
 )
-from ._generated.api.contracts import get_contract, list_contracts, register_contract
+from ._generated.api.contracts import (
+    get_api_v1_search,
+    get_contract,
+    list_contracts,
+    register_contract,
+)
 from ._generated.api.events import list_contract_events, stream_contract_events
 from ._generated.api.forecast import get_contract_forecast
 from ._generated.api.health import health as health_operation
 from ._generated.api.health import readyz
 from ._generated.api.invocations import list_contract_invocations
+from ._generated.api.reports import (
+    create_report_subscription,
+    delete_report_subscription,
+    get_contract_report,
+    get_contract_report_history,
+    list_report_subscriptions,
+)
 from ._generated.api.snapshots import get_contract_snapshot
 from ._generated.api.stats import get_contract_stats, get_global_stats
 from ._generated.api.storage import list_contract_storage
@@ -49,16 +64,24 @@ from ._generated.client import Client as _GeneratedClient
 from ._generated.models import (
     AddToWatchlistBody,
     Contract,
+    ContractReport,
     ContractSnapshot,
     ContractStats,
     CreateApiKeyAdminBody,
     CreateApiKeyBody,
     CreateApiKeyBodyScopesItem,
+    CreateReportSubscriptionBody,
+    CreateReportSubscriptionBodyFrequency,
+    GetApiV1SearchResponse200,
+    GetContractReportHistoryResponse200,
     GetContractForecastResponse200,
     GetGlobalStatsResponse200,
     GetWatchdogStatsNetwork,
     HealthResponse200,
     InWatchlist,
+    ListAlertsNetwork,
+    ListAlertsResponse200,
+    ListAlertsSeverity,
     ListApiKeysResponse200,
     ListContractAlertsNetwork,
     ListContractAlertsResponse200,
@@ -77,12 +100,14 @@ from ._generated.models import (
     ListContractStorageStatus,
     ListMonitoredContractsNetwork,
     ListMonitoredContractsResponse200,
+    ListReportSubscriptionsResponse200,
     ListWatchdogAlertsNetwork,
     ListWatchdogAlertsResponse200,
     ListWatchdogAlertsSeverity,
     MonitoredContract,
     RegisterContractBody,
     RegisterContractBodyNetwork,
+    ReportSubscription,
     StreamContractEventsResponse200,
     WatchdogStats,
     Watchlist,
@@ -315,6 +340,13 @@ class _ApiKeys(_SyncResource):
     def revoke(self, key_id: str) -> None:
         _unwrap(revoke_api_key.sync_detailed(key_id, client=self._client))
 
+    def get(self, key_id: str) -> Any:
+        return _unwrap(get_api_key.sync_detailed(key_id, client=self._client))
+
+    def rotate(self, key_id: str) -> Any:
+        """Rotates a key; the new plaintext token is returned once."""
+        return _unwrap(rotate_api_key.sync_detailed(key_id, client=self._client))
+
     def list_admin(
         self, *, cursor: str | None = None, limit: int | None = None
     ) -> ListApiKeysResponse200:
@@ -424,6 +456,74 @@ class _Watchdog(_SyncResource):
         )
 
 
+class _Alerts(_SyncResource):
+    """Cross-contract alert feed (``/api/v1/alerts``, issue #556)."""
+
+    def list(
+        self,
+        *,
+        flat: bool | None = None,
+        contract_id: str | None = None,
+        severity: str | None = None,
+        network: str | None = None,
+        cursor: str | None = None,
+        limit: int | None = None,
+    ) -> ListAlertsResponse200:
+        return _unwrap(
+            list_alerts.sync_detailed(
+                client=self._client,
+                flat=_value(flat),
+                contract_id=_value(contract_id),
+                severity=_enum(ListAlertsSeverity, severity),
+                network=_enum(ListAlertsNetwork, network),
+                cursor=_value(cursor),
+                limit=_value(limit),
+            )
+        )
+
+
+class _Reports(_SyncResource):
+    """SLA reports and email digest subscriptions (issue #556)."""
+
+    def get(
+        self, contract_id: str, *, month: str | None = None
+    ) -> ContractReport:
+        return _unwrap(
+            get_contract_report.sync_detailed(
+                contract_id, client=self._client, month=_value(month)
+            )
+        )
+
+    def history(
+        self, contract_id: str, *, months: int | None = None
+    ) -> GetContractReportHistoryResponse200:
+        return _unwrap(
+            get_contract_report_history.sync_detailed(
+                contract_id, client=self._client, months=_value(months)
+            )
+        )
+
+    def subscribe(
+        self, email: str, frequency: str, *, day_of_week: int | None = None
+    ) -> ReportSubscription:
+        body = CreateReportSubscriptionBody(
+            email=email,
+            frequency=CreateReportSubscriptionBodyFrequency(frequency),
+            day_of_week=_value(day_of_week),
+        )
+        return _unwrap(
+            create_report_subscription.sync_detailed(client=self._client, body=body)
+        )
+
+    def subscriptions(self, email: str) -> ListReportSubscriptionsResponse200:
+        return _unwrap(
+            list_report_subscriptions.sync_detailed(client=self._client, email=email)
+        )
+
+    def unsubscribe(self, subscription_id: str) -> None:
+        _unwrap(delete_report_subscription.sync_detailed(subscription_id, client=self._client))
+
+
 class Client:
     """Synchronous client for the Sorolens API.
 
@@ -459,6 +559,16 @@ class Client:
         self.api_keys = _ApiKeys(self)
         self.watchlist = _Watchlist(self)
         self.watchdog = _Watchdog(self)
+        self.alerts = _Alerts(self)
+        self.reports = _Reports(self)
+
+    def search(
+        self, q: str, *, limit: int | None = None
+    ) -> GetApiV1SearchResponse200:
+        """Full-text contract search on ``GET /api/v1/search`` (issue #556)."""
+        return _unwrap(
+            get_api_v1_search.sync_detailed(client=self._client, q=q, limit=_value(limit))
+        )
 
     def close(self) -> None:
         self._client.get_httpx_client().close()
@@ -649,6 +759,13 @@ class _AsyncApiKeys(_AsyncResource):
     async def revoke(self, key_id: str) -> None:
         _unwrap(await revoke_api_key.asyncio_detailed(key_id, client=self._client))
 
+    async def get(self, key_id: str) -> Any:
+        return _unwrap(await get_api_key.asyncio_detailed(key_id, client=self._client))
+
+    async def rotate(self, key_id: str) -> Any:
+        """Rotates a key; the new plaintext token is returned once."""
+        return _unwrap(await rotate_api_key.asyncio_detailed(key_id, client=self._client))
+
     async def list_admin(
         self, *, cursor: str | None = None, limit: int | None = None
     ) -> ListApiKeysResponse200:
@@ -768,6 +885,74 @@ class _AsyncWatchdog(_AsyncResource):
         )
 
 
+class _AsyncAlerts(_AsyncResource):
+    """Cross-contract alert feed (``/api/v1/alerts``, issue #556)."""
+
+    async def list(
+        self,
+        *,
+        flat: bool | None = None,
+        contract_id: str | None = None,
+        severity: str | None = None,
+        network: str | None = None,
+        cursor: str | None = None,
+        limit: int | None = None,
+    ) -> ListAlertsResponse200:
+        return _unwrap(
+            await list_alerts.asyncio_detailed(
+                client=self._client,
+                flat=_value(flat),
+                contract_id=_value(contract_id),
+                severity=_enum(ListAlertsSeverity, severity),
+                network=_enum(ListAlertsNetwork, network),
+                cursor=_value(cursor),
+                limit=_value(limit),
+            )
+        )
+
+
+class _AsyncReports(_AsyncResource):
+    """SLA reports and email digest subscriptions (issue #556)."""
+
+    async def get(
+        self, contract_id: str, *, month: str | None = None
+    ) -> ContractReport:
+        return _unwrap(
+            await get_contract_report.asyncio_detailed(
+                contract_id, client=self._client, month=_value(month)
+            )
+        )
+
+    async def history(
+        self, contract_id: str, *, months: int | None = None
+    ) -> GetContractReportHistoryResponse200:
+        return _unwrap(
+            await get_contract_report_history.asyncio_detailed(
+                contract_id, client=self._client, months=_value(months)
+            )
+        )
+
+    async def subscribe(
+        self, email: str, frequency: str, *, day_of_week: int | None = None
+    ) -> ReportSubscription:
+        body = CreateReportSubscriptionBody(
+            email=email,
+            frequency=CreateReportSubscriptionBodyFrequency(frequency),
+            day_of_week=_value(day_of_week),
+        )
+        return _unwrap(
+            await create_report_subscription.asyncio_detailed(client=self._client, body=body)
+        )
+
+    async def subscriptions(self, email: str) -> ListReportSubscriptionsResponse200:
+        return _unwrap(
+            await list_report_subscriptions.asyncio_detailed(client=self._client, email=email)
+        )
+
+    async def unsubscribe(self, subscription_id: str) -> None:
+        _unwrap(await delete_report_subscription.asyncio_detailed(subscription_id, client=self._client))
+
+
 class AsyncClient:
     """Asynchronous (``httpx.AsyncClient``) client for the Sorolens API.
 
@@ -802,6 +987,18 @@ class AsyncClient:
         self.api_keys = _AsyncApiKeys(self)
         self.watchlist = _AsyncWatchlist(self)
         self.watchdog = _AsyncWatchdog(self)
+        self.alerts = _AsyncAlerts(self)
+        self.reports = _AsyncReports(self)
+
+    async def search(
+        self, q: str, *, limit: int | None = None
+    ) -> GetApiV1SearchResponse200:
+        """Full-text contract search on ``GET /api/v1/search`` (issue #556)."""
+        return _unwrap(
+            await get_api_v1_search.asyncio_detailed(
+                client=self._client, q=q, limit=_value(limit)
+            )
+        )
 
     async def close(self) -> None:
         await self._client.get_async_httpx_client().aclose()

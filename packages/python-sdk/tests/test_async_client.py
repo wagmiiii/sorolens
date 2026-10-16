@@ -40,3 +40,19 @@ async def test_async_list_events(client):
 async def test_async_watchdog_stats(client):
     stats = await client.watchdog.stats()
     assert stats.healthy == 9
+
+
+@pytest.mark.asyncio
+async def test_facade_issue_556_surfaces():
+    async with make_async_client() as client:
+        search = await client.search("counter", limit=5)
+        assert [contract.label for contract in search.items] == ["counter"]
+
+        page = await client.alerts.list(severity="Warning", limit=50)
+        assert page.groups[0].rule == "error_rate"
+
+        report = await client.reports.get(CONTRACT_ID, month="2026-05")
+        assert report.uptime_pct == 99.5
+
+        rotated = await client.api_keys.rotate("key-1")
+        assert rotated.key.startswith("sk_")

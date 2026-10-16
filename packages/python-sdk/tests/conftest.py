@@ -31,9 +31,21 @@ def api_handler(request: httpx.Request) -> httpx.Response:
         ("GET", f"/api/v1/contracts/{CONTRACT_ID}/events"): (200, "events_page.json"),
         ("GET", "/api/v1/watchdog/stats"): (200, "watchdog_stats.json"),
         ("POST", "/api/v1/api-keys"): (201, "create_api_key.json"),
+        # --- surfaces added for issue #556 ---
+        ("GET", "/api/v1/search"): (200, "search.json"),
+        ("GET", "/api/v1/alerts"): (200, "alert_groups.json"),
+        ("GET", f"/api/v1/reports/{CONTRACT_ID}"): (200, "contract_report.json"),
+        ("GET", f"/api/v1/reports/{CONTRACT_ID}/history"): (200, "report_history.json"),
+        ("POST", "/api/v1/reports/subscriptions"): (201, "report_subscription.json"),
+        ("GET", "/api/v1/reports/subscriptions"): (200, "report_subscriptions_list.json"),
+        ("DELETE", "/api/v1/reports/subscriptions/rs_1"): (204, None),
+        ("GET", "/api/v1/api-keys/key-1"): (200, "get_api_key.json"),
+        ("POST", "/api/v1/api-keys/key-1/rotate"): (200, "create_api_key.json"),
     }
     if (method, path) in routes:
         status, fixture = routes[(method, path)]
+        if fixture is None:
+            return httpx.Response(status)
         return httpx.Response(status, json=load(fixture))
     return httpx.Response(
         404,

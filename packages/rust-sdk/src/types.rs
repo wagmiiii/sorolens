@@ -540,6 +540,55 @@ pub struct Readiness {
     pub checks: HashMap<String, String>,
 }
 
+/// Request body of `POST /api/v1/api-keys` (issue #556).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct CreateApiKeyRequest {
+    /// Human-friendly key name.
+    pub name: String,
+    /// Scopes granted to the key, e.g. `read:contracts`.
+    pub scopes: Vec<String>,
+}
+
+impl CreateApiKeyRequest {
+    /// Creates a key request named `name` with the given scopes.
+    pub fn new<'a>(name: impl Into<String>, scopes: impl IntoIterator<Item = &'a str>) -> Self {
+        Self {
+            name: name.into(),
+            scopes: scopes.into_iter().map(str::to_string).collect(),
+        }
+    }
+}
+
+/// Request body of `POST /api/v1/reports/subscriptions` (issue #556).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct CreateReportSubscriptionRequest {
+    /// Subscriber email address.
+    pub email: String,
+    /// Digest frequency: `daily` or `weekly`.
+    pub frequency: String,
+    /// Day of week (0..6, Sun..Sat); only meaningful for weekly digests.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub day_of_week: Option<u8>,
+}
+
+impl CreateReportSubscriptionRequest {
+    /// Creates a digest subscription request for `email` and `frequency`
+    /// (`daily` or `weekly`).
+    pub fn new(email: impl Into<String>, frequency: impl Into<String>) -> Self {
+        Self {
+            email: email.into(),
+            frequency: frequency.into(),
+            day_of_week: None,
+        }
+    }
+
+    /// Sets the weekly digest day of week (0..6, Sun..Sat).
+    pub fn day_of_week(mut self, day: u8) -> Self {
+        self.day_of_week = Some(day);
+        self
+    }
+}
+
 /// Request body of `POST /api/v1/contracts`.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct RegisterContractRequest {

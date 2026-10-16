@@ -1,0 +1,19 @@
+{
+  "contract_id": "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC",
+  "month": "2026-05",
+  "uptime_pct": 99.5,
+  "total_checks": 720,
+  "healthy_checks": 716,
+  "incidents": 2,
+  "mttr_seconds": 45.0,
+  "total_downtime_seconds": 90.0,
+  "longest_outage_seconds": 60.0,
+  "ongoing_outage": false,
+  "critical_alerts": 1,
+  "warning_alerts": 3,
+  "info_alerts": 5,
+  "total_alerts": 9,
+  "first_check": "2026-05-01T00:00:00Z",
+  "last_check": "2026-05-31T23:00:00Z",
+  "signed": false
+}

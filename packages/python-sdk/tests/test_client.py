@@ -75,3 +75,45 @@ def test_api_key_sent_as_bearer_token():
 
     assert seen[0].headers["Authorization"] == f"Bearer {API_KEY}"
     assert str(seen[0].url) == f"{BASE_URL}/health"
+
+
+# ---- facade surfaces added for issue #556 (search / reports / alerts) ------
+
+
+def test_search(client):
+    res = client.search("counter", limit=5)
+    assert [contract.label for contract in res.items] == ["counter"]
+
+
+def test_list_alerts(client):
+    page = client.alerts.list(severity="Warning", limit=50)
+    group = page.groups[0]
+    assert group.rule == "error_rate"
+    assert group.severity.value == "Warning"
+
+
+def test_get_contract_report(client):
+    report = client.reports.get(CONTRACT_ID, month="2026-05")
+    assert report.uptime_pct == 99.5
+    assert report.incidents == 2
+
+
+def test_report_history(client):
+    history = client.reports.history(CONTRACT_ID, months=3)
+    assert history.months[0].month == "2026-04"
+
+
+def test_report_subscription_lifecycle(client):
+    created = client.reports.subscribe("ops@example.com", "weekly", day_of_week=1)
+    assert created.id == "rs_1"
+    listed = client.reports.subscriptions("ops@example.com")
+    assert [sub.frequency.value for sub in listed.subscriptions] == ["weekly"]
+    client.reports.unsubscribe("rs_1")
+
+
+def test_api_key_get_and_rotate(client):
+    meta = client.api_keys.get("key-1")
+    assert meta.name == "ci"
+    assert meta.key_prefix == "sk_ci"
+    rotated = client.api_keys.rotate("key-1")
+    assert rotated.key.startswith("sk_")

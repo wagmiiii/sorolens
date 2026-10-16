@@ -1,0 +1,1057 @@
+{
+  "version": 1,
+  "description": "Documented exclusions for scripts/check_sdk_coverage.py (issue #556). Each entry states why one operationId is intentionally absent from one SDK surface. The CI gate fails when an allowlisted operation becomes implemented (stale entry) or when an entry references an unknown operationId. Never add an entry just to silence a regression - implement the method or record a concrete architectural reason.",
+  "checked_surfaces": [
+    "rust",
+    "python_generated",
+    "python_facade"
+  ],
+  "note_go_client": "packages/go-client is regenerated from docs/openapi.yaml and pinned by the go-client-stale CI job, so name coverage there is already enforced.",
+  "exemptions": [
+    {
+      "sdk": "python_facade",
+      "operation": "addContractTag",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "addGroupContract",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "addWatchedAccount",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "apiHealth",
+      "reason": "duplicate liveness probe; SDKs expose health/readyz instead"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "batchContracts",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "compareContracts",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "createAlertRule",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "createAlertSubscription",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "createContractNote",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "createGroup",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "deleteAlertRule",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "deleteAlertSubscription",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "deleteContractNote",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "deleteGroup",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "deleteWatchedAccount",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "exportContractEventsCSV",
+      "reason": "CSV export; SDK transports parse JSON bodies"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "exportContractSnapshot",
+      "reason": "Binary Parquet/gzip export; SDK transports parse JSON bodies"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "getApiKeyAdmin",
+      "reason": "admin-only surface (server operators); intentionally outside the user-facing SDK/facade scope"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "getContractGraph",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "getContractHealthScore",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "getContractSLABadge",
+      "reason": "SVG badge (image/svg+xml); SDK transports parse JSON bodies"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "getContractSpec",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "getContractSummary",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "getContractUptime",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "getContractVerification",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "getContractWasm",
+      "reason": "Raw WASM module download; SDK transports parse JSON bodies"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "getGroup",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "getGroupStats",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "getInvocationTrace",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "getMetrics",
+      "reason": "Prometheus text exposition; not a JSON operation"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "getSubscriptionSigningSecret",
+      "reason": "Webhook signing-secret retrieval (admin console flow)"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "getVersion",
+      "reason": "deployment version probe; covered by health/readyz for SDK users"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "graphql",
+      "reason": "GraphQL endpoint; SDK transports are REST/JSON only"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "listAlertRules",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "listAlertSubscriptions",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "listAllEvents",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "listAllInvocations",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "listAuditEvents",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "listContractNotes",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "listContractUpgrades",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "listFailedEvents",
+      "reason": "ops/DLQ inspection endpoint (internal queue tooling)"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "listGroups",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "listRuleLibrary",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "listRuleMetrics",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "listWatchedAccounts",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "liveActivity",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "previewAlertRule",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "recentEvents",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "removeContractTag",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "removeGroupContract",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "removeGroupContractByPath",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "requeueFailedEvent",
+      "reason": "ops/DLQ mutation endpoint (internal queue tooling)"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "rotateApiKeyAdmin",
+      "reason": "admin-only surface (server operators); intentionally outside the user-facing SDK/facade scope"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "rotateSubscriptionSigningSecret",
+      "reason": "Webhook signing-secret management (admin console flow)"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "setAlertRuleEnabled",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "slackCommand",
+      "reason": "Slack Events webhook receiver (form-encoded); not an SDK-callable surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "streamAllEvents",
+      "reason": "SSE stream; use REST list/poll or an SSE-capable client"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "subscribeEventsWS",
+      "reason": "WebSocket upgrade; SDK transports are request/response HTTP"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "unsubscribeReport",
+      "reason": "One-click unsubscribe link for digest emails (HTML/text browser flow)"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "updateContractNote",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "updateGroup",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "v2AddToWatchlist",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "v2AdminCreateKey",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "v2AdminGetKey",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "v2AdminListKeys",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "v2AdminRevokeKey",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "v2AdminRotateKey",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "v2ContractForecast",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "v2ContractGraph",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "v2ContractSnapshot",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "v2ContractStats",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "v2CreateAPIKey",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "v2GetAPIKey",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "v2GetContract",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "v2GetContractHealthScore",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "v2GetMonitoredContract",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "v2GlobalStats",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "v2ListAPIKeys",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "v2ListContractAlerts",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "v2ListContractUpgrades",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "v2ListContracts",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "v2ListEvents",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "v2ListHealthChecks",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "v2ListInvocations",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "v2ListMonitoredContracts",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "v2ListStorageEntries",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "v2ListWatchdogAlerts",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "v2ListWatchlist",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "v2LiveActivity",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "v2RecentEvents",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "v2RegisterContract",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "v2RemoveFromWatchlist",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "v2RevokeAPIKey",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "v2RotateAPIKey",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "v2StreamEvents",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "v2ValidateContract",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "v2WatchdogStats",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "v2WatchlistStatus",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "validateAlertRule",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "validateContract",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "python_facade",
+      "operation": "verifyContractSource",
+      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
+    },
+    {
+      "sdk": "rust",
+      "operation": "addContractTag",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "addGroupContract",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "addToWatchlist",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "addWatchedAccount",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "apiHealth",
+      "reason": "duplicate liveness probe; SDKs expose health/readyz instead"
+    },
+    {
+      "sdk": "rust",
+      "operation": "batchContracts",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "compareContracts",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "createAlertRule",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "createAlertSubscription",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "createApiKeyAdmin",
+      "reason": "admin-only surface (server operators); intentionally outside the user-facing SDK/facade scope"
+    },
+    {
+      "sdk": "rust",
+      "operation": "createContractNote",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "createGroup",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "deleteAlertRule",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "deleteAlertSubscription",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "deleteContractNote",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "deleteGroup",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "deleteWatchedAccount",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "exportContractEventsCSV",
+      "reason": "CSV export; SDK transports parse JSON bodies"
+    },
+    {
+      "sdk": "rust",
+      "operation": "exportContractSnapshot",
+      "reason": "Binary Parquet/gzip export; SDK transports parse JSON bodies"
+    },
+    {
+      "sdk": "rust",
+      "operation": "getApiKeyAdmin",
+      "reason": "admin-only surface (server operators); intentionally outside the user-facing SDK/facade scope"
+    },
+    {
+      "sdk": "rust",
+      "operation": "getContractGraph",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "getContractHealthScore",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "getContractSLABadge",
+      "reason": "SVG badge (image/svg+xml); SDK transports parse JSON bodies"
+    },
+    {
+      "sdk": "rust",
+      "operation": "getContractSpec",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "getContractSummary",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "getContractUptime",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "getContractVerification",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "getContractWasm",
+      "reason": "Raw WASM module download; SDK transports parse JSON bodies"
+    },
+    {
+      "sdk": "rust",
+      "operation": "getGroup",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "getGroupStats",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "getInvocationTrace",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "getMetrics",
+      "reason": "Prometheus text exposition; not a JSON operation"
+    },
+    {
+      "sdk": "rust",
+      "operation": "getSubscriptionSigningSecret",
+      "reason": "Webhook signing-secret retrieval (admin console flow)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "getVersion",
+      "reason": "deployment version probe; covered by health/readyz for SDK users"
+    },
+    {
+      "sdk": "rust",
+      "operation": "getWatchlistStatus",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "graphql",
+      "reason": "GraphQL endpoint; SDK transports are REST/JSON only"
+    },
+    {
+      "sdk": "rust",
+      "operation": "listAlertRules",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "listAlertSubscriptions",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "listAllEvents",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "listAllInvocations",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "listApiKeysAdmin",
+      "reason": "admin-only surface (server operators); intentionally outside the user-facing SDK/facade scope"
+    },
+    {
+      "sdk": "rust",
+      "operation": "listAuditEvents",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "listContractNotes",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "listContractUpgrades",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "listFailedEvents",
+      "reason": "ops/DLQ inspection endpoint (internal queue tooling)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "listGroups",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "listRuleLibrary",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "listRuleMetrics",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "listWatchedAccounts",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "listWatchlist",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "liveActivity",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "previewAlertRule",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "recentEvents",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "removeContractTag",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "removeFromWatchlist",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "removeGroupContract",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "removeGroupContractByPath",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "requeueFailedEvent",
+      "reason": "ops/DLQ mutation endpoint (internal queue tooling)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "revokeApiKeyAdmin",
+      "reason": "admin-only surface (server operators); intentionally outside the user-facing SDK/facade scope"
+    },
+    {
+      "sdk": "rust",
+      "operation": "rotateApiKeyAdmin",
+      "reason": "admin-only surface (server operators); intentionally outside the user-facing SDK/facade scope"
+    },
+    {
+      "sdk": "rust",
+      "operation": "rotateSubscriptionSigningSecret",
+      "reason": "Webhook signing-secret management (admin console flow)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "setAlertRuleEnabled",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "slackCommand",
+      "reason": "Slack Events webhook receiver (form-encoded); not an SDK-callable surface"
+    },
+    {
+      "sdk": "rust",
+      "operation": "streamAllEvents",
+      "reason": "SSE stream; use REST list/poll or an SSE-capable client"
+    },
+    {
+      "sdk": "rust",
+      "operation": "subscribeEventsWS",
+      "reason": "WebSocket upgrade; SDK transports are request/response HTTP"
+    },
+    {
+      "sdk": "rust",
+      "operation": "unsubscribeReport",
+      "reason": "One-click unsubscribe link for digest emails (HTML/text browser flow)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "updateContractNote",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "updateGroup",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "v2AddToWatchlist",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "rust",
+      "operation": "v2AdminCreateKey",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "rust",
+      "operation": "v2AdminGetKey",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "rust",
+      "operation": "v2AdminListKeys",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "rust",
+      "operation": "v2AdminRevokeKey",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "rust",
+      "operation": "v2AdminRotateKey",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "rust",
+      "operation": "v2ContractForecast",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "rust",
+      "operation": "v2ContractGraph",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "rust",
+      "operation": "v2ContractSnapshot",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "rust",
+      "operation": "v2ContractStats",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "rust",
+      "operation": "v2CreateAPIKey",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "rust",
+      "operation": "v2GetAPIKey",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "rust",
+      "operation": "v2GetContract",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "rust",
+      "operation": "v2GetContractHealthScore",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "rust",
+      "operation": "v2GetMonitoredContract",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "rust",
+      "operation": "v2GlobalStats",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "rust",
+      "operation": "v2ListAPIKeys",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "rust",
+      "operation": "v2ListContractAlerts",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "rust",
+      "operation": "v2ListContractUpgrades",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "rust",
+      "operation": "v2ListContracts",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "rust",
+      "operation": "v2ListEvents",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "rust",
+      "operation": "v2ListHealthChecks",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "rust",
+      "operation": "v2ListInvocations",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "rust",
+      "operation": "v2ListMonitoredContracts",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "rust",
+      "operation": "v2ListStorageEntries",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "rust",
+      "operation": "v2ListWatchdogAlerts",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "rust",
+      "operation": "v2ListWatchlist",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "rust",
+      "operation": "v2LiveActivity",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "rust",
+      "operation": "v2RecentEvents",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "rust",
+      "operation": "v2RegisterContract",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "rust",
+      "operation": "v2RemoveFromWatchlist",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "rust",
+      "operation": "v2RevokeAPIKey",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "rust",
+      "operation": "v2RotateAPIKey",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "rust",
+      "operation": "v2StreamEvents",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "rust",
+      "operation": "v2ValidateContract",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "rust",
+      "operation": "v2WatchdogStats",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "rust",
+      "operation": "v2WatchlistStatus",
+      "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
+    },
+    {
+      "sdk": "rust",
+      "operation": "validateAlertRule",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "validateContract",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    },
+    {
+      "sdk": "rust",
+      "operation": "verifyContractSource",
+      "reason": "known gap in the hand-written Rust SDK; listed explicitly so the gate flags any NEW missing operation - follow-up PRs implement these (issue #556)"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "groups": [
+    {
+      "id": 7,
+      "group_key": "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC|error_rate",
+      "contract_id": "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC",
+      "severity": "Warning",
+      "rule": "error_rate",
+      "count": 4,
+      "dedupe_window_secs": 300,
+      "first_seen": "2026-05-01T10:00:00Z",
+      "last_seen": "2026-05-01T10:20:00Z",
+      "last_message": "error rate above threshold",
+      "backfill_eligible": false
+    }
+  ],
+  "next_cursor": ""
+}

@@ -109,6 +109,11 @@ pub(crate) fn parse_json<T: DeserializeOwned>(status: u16, body: &[u8]) -> Resul
     if !(200..300).contains(&status) {
         return Err(Error::Api(parse_api_error(status, body)));
     }
+    // 204-style empty bodies deserialize as JSON null, which lets unit-type
+    // responses (`()`, e.g. DELETE endpoints) parse cleanly.
+    if body.is_empty() {
+        return serde_json::from_str("null").map_err(Error::Json);
+    }
     serde_json::from_slice(body).map_err(Error::Json)
 }
 

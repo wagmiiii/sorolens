@@ -1,0 +1,24 @@
+{
+  "contract_id": "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC",
+  "months": [
+    {
+      "contract_id": "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC",
+      "month": "2026-04",
+      "uptime_pct": 98.75,
+      "total_checks": 700,
+      "healthy_checks": 691,
+      "incidents": 1,
+      "mttr_seconds": 120.0,
+      "total_downtime_seconds": 120.0,
+      "longest_outage_seconds": 120.0,
+      "ongoing_outage": false,
+      "critical_alerts": 2,
+      "warning_alerts": 1,
+      "info_alerts": 0,
+      "total_alerts": 3,
+      "first_check": "2026-04-01T00:00:00Z",
+      "last_check": "2026-04-30T23:00:00Z",
+      "signed": false
+    }
+  ]
+}

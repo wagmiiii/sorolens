@@ -110,6 +110,26 @@ jobs:
       - name: Verify no diff
         run: git diff --exit-code -- packages/go-client/internal
   # ------------------------------------------------------------
+  # SDK coverage gate (issue #556): every OpenAPI operationId must be
+  # exposed by the Rust SDK and the Python SDK (generated client + facade),
+  # or be explicitly allowlisted in scripts/sdk-coverage-allowlist.json.
+  # The Go client is covered by the go-client-stale regen job above.
+  # ------------------------------------------------------------
+  sdk-coverage:
+    name: SDK operationId coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install pyyaml
+        run: python -m pip install pyyaml
+      - name: Check SDK coverage
+        run: python scripts/check_sdk_coverage.py
+  # ------------------------------------------------------------
   # Node: XDR decoder package and shared packages
   # ------------------------------------------------------------
   node:
