@@ -114,6 +114,11 @@ jobs:
   # exposed by the Rust SDK and the Python SDK (generated client + facade),
   # or be explicitly allowlisted in scripts/sdk-coverage-allowlist.json.
   # The Go client is covered by the go-client-stale regen job above.
+  # ALLOWLIST POLICY: only intentional exclusions are permitted - admin-only
+  # operator surfaces, v2 aliases of a covered v1 op, non-JSON/binary or
+  # non-REST transports, and ops/internal tooling. "Known gap" / "not yet
+  # implemented" exemptions are forbidden: implement the method instead.
+  # Stale entries (op now implemented / unknown operationId) also fail CI.
   # ------------------------------------------------------------
   sdk-coverage:
     name: SDK operationId coverage

@@ -41,6 +41,11 @@ def api_handler(request: httpx.Request) -> httpx.Response:
         ("DELETE", "/api/v1/reports/subscriptions/rs_1"): (204, None),
         ("GET", "/api/v1/api-keys/key-1"): (200, "get_api_key.json"),
         ("POST", "/api/v1/api-keys/key-1/rotate"): (200, "create_api_key.json"),
+        # --- facade wiring for the remaining v1 surfaces (issue #556) ---
+        ("GET", "/api/v1/rules"): (200, "rules_list.json"),
+        ("GET", "/api/v1/groups"): (200, "groups_list.json"),
+        ("GET", "/api/v1/watched-accounts"): (200, "watched_accounts_list.json"),
+        ("GET", "/api/v1/events/recent"): (200, "recent_events_list.json"),
     }
     if (method, path) in routes:
         status, fixture = routes[(method, path)]

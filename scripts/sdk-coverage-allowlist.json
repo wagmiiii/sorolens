@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "description": "Documented exclusions for scripts/check_sdk_coverage.py (issue #556). Each entry states why one operationId is intentionally absent from one SDK surface. The CI gate fails when an allowlisted operation becomes implemented (stale entry) or when an entry references an unknown operationId. Never add an entry just to silence a regression - implement the method or record a concrete architectural reason.",
+  "description": "Documented exclusions for scripts/check_sdk_coverage.py (issue #556). Each entry states why one operationId is intentionally absent from one SDK surface. POLICY: an exemption must record a genuinely intentional architectural reason - one of: (1) admin-only operator surface that is not part of the user-facing SDK scope; (2) v2 alias of a covered v1 operation (the SDK exposes only the canonical v1 implementation); (3) non-JSON/binary or non-REST transport (CSV/Parquet/SVG/Prometheus/GraphQL/WebSocket/SSE/webhook receivers) that the SDK's JSON transports cannot parse; (4) ops/DLQ or one-click email flows meant for internal tooling or browsers, not SDK callers. Exemptions that merely acknowledge a missing implementation ('known gap', 'not yet wired', 'to be added later') are FORBIDDEN - implement the operation instead. The CI gate also fails when an allowlisted operation becomes implemented (stale entry) or when an entry references an unknown operationId. Every entry carries a human-written reason; adding one is a deliberate act, never automatic.",
   "checked_surfaces": [
     "rust",
     "python_generated",
@@ -10,78 +10,8 @@
   "exemptions": [
     {
       "sdk": "python_facade",
-      "operation": "addContractTag",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "addGroupContract",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "addWatchedAccount",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
       "operation": "apiHealth",
       "reason": "duplicate liveness probe; SDKs expose health/readyz instead"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "batchContracts",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "compareContracts",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "createAlertRule",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "createAlertSubscription",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "createContractNote",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "createGroup",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "deleteAlertRule",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "deleteAlertSubscription",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "deleteContractNote",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "deleteGroup",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "deleteWatchedAccount",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
     },
     {
       "sdk": "python_facade",
@@ -100,58 +30,13 @@
     },
     {
       "sdk": "python_facade",
-      "operation": "getContractGraph",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "getContractHealthScore",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
       "operation": "getContractSLABadge",
       "reason": "SVG badge (image/svg+xml); SDK transports parse JSON bodies"
     },
     {
       "sdk": "python_facade",
-      "operation": "getContractSpec",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "getContractSummary",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "getContractUptime",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "getContractVerification",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
       "operation": "getContractWasm",
       "reason": "Raw WASM module download; SDK transports parse JSON bodies"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "getGroup",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "getGroupStats",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "getInvocationTrace",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
     },
     {
       "sdk": "python_facade",
@@ -175,93 +60,8 @@
     },
     {
       "sdk": "python_facade",
-      "operation": "listAlertRules",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "listAlertSubscriptions",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "listAllEvents",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "listAllInvocations",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "listAuditEvents",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "listContractNotes",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "listContractUpgrades",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
       "operation": "listFailedEvents",
       "reason": "ops/DLQ inspection endpoint (internal queue tooling)"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "listGroups",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "listRuleLibrary",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "listRuleMetrics",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "listWatchedAccounts",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "liveActivity",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "previewAlertRule",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "recentEvents",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "removeContractTag",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "removeGroupContract",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "removeGroupContractByPath",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
     },
     {
       "sdk": "python_facade",
@@ -277,11 +77,6 @@
       "sdk": "python_facade",
       "operation": "rotateSubscriptionSigningSecret",
       "reason": "Webhook signing-secret management (admin console flow)"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "setAlertRuleEnabled",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
     },
     {
       "sdk": "python_facade",
@@ -302,16 +97,6 @@
       "sdk": "python_facade",
       "operation": "unsubscribeReport",
       "reason": "One-click unsubscribe link for digest emails (HTML/text browser flow)"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "updateContractNote",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "updateGroup",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
     },
     {
       "sdk": "python_facade",
@@ -497,21 +282,6 @@
       "sdk": "python_facade",
       "operation": "v2WatchlistStatus",
       "reason": "v2 alias of the equivalent v1 operation; the surface exposes the canonical v1 implementation so callers are not forced to choose between duplicates"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "validateAlertRule",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "validateContract",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
-    },
-    {
-      "sdk": "python_facade",
-      "operation": "verifyContractSource",
-      "reason": "not wired into the high-level facade; reachable through the generated layer sorolens._generated.api.*; the facade covers the documented core surface"
     },
     {
       "sdk": "rust",

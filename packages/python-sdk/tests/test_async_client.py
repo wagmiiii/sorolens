@@ -56,3 +56,9 @@ async def test_facade_issue_556_surfaces():
 
         rotated = await client.api_keys.rotate("key-1")
         assert rotated.key.startswith("sk_")
+
+
+async def test_async_rules_and_groups_lists(client):
+    assert await client.rules.list() is not None
+    assert (await client.rules.list()).rules == []
+    assert (await client.groups.list("user-1")).groups == []

@@ -59,6 +59,89 @@ from ._generated.api.watchlist import (
     list_watchlist,
     remove_from_watchlist,
 )
+# --- facade wiring for the remaining v1 surfaces (issue #556) ------------- #
+from ._generated.api.alert_rules import (
+    create_alert_rule,
+    delete_alert_rule,
+    list_alert_rules,
+    list_rule_library,
+    list_rule_metrics,
+    preview_alert_rule,
+    set_alert_rule_enabled,
+    validate_alert_rule,
+)
+from ._generated.api.audit import list_audit_events
+from ._generated.api.contracts import (
+    add_contract_tag,
+    batch_contracts,
+    create_contract_note,
+    delete_contract_note,
+    get_contract_graph,
+    get_contract_spec,
+    get_invocation_trace,
+    list_contract_notes,
+    list_contract_upgrades,
+    remove_contract_tag,
+    update_contract_note,
+    validate_contract,
+)
+from ._generated.api.events import list_all_events
+from ._generated.api.groups import (
+    add_group_contract,
+    create_group,
+    delete_group,
+    get_group,
+    get_group_stats,
+    list_groups,
+    remove_group_contract,
+    remove_group_contract_by_path,
+    update_group,
+)
+from ._generated.api.invocations import list_all_invocations
+from ._generated.api.live import live_activity, recent_events
+from ._generated.api.notifications import (
+    create_alert_subscription,
+    delete_alert_subscription,
+    list_alert_subscriptions,
+)
+from ._generated.api.stats import (
+    compare_contracts,
+    get_contract_health_score,
+    get_contract_summary,
+)
+from ._generated.api.verification import (
+    get_contract_verification,
+    verify_contract_source,
+)
+from ._generated.api.watchdog import get_contract_uptime
+from ._generated.api.watched_accounts import (
+    add_watched_account,
+    delete_watched_account,
+    list_watched_accounts,
+)
+from ._generated.models import (
+    AddGroupContractBody,
+    AddWatchedAccountBody,
+    BatchContractsRequest,
+    CompareContractsWindow,
+    ContractNoteRequest,
+    ContractTagRequest,
+    ContractVerificationRequest,
+    CreateAlertRuleBody,
+    CreateAlertSubscription,
+    CreateGroupBody,
+    ListAllEventsNetwork,
+    ListAllEventsType,
+    ListAllInvocationsNetwork,
+    ListAllInvocationsStatus,
+    PreviewAlertRuleBody,
+    RemoveGroupContractBody,
+    SetAlertRuleEnabledBody,
+    UpdateGroupBody,
+    ValidateAlertRuleBody,
+    ValidateContractBody,
+)
+
 from ._generated.client import AuthenticatedClient
 from ._generated.client import Client as _GeneratedClient
 from ._generated.models import (
@@ -188,6 +271,28 @@ class _Stats(_SyncResource):
             )
         )
 
+    def compare(self, ids: list[str], *, window: str | None = None) -> Any:
+        """Side-by-side counters for several contracts (issue #556 facade wiring)."""
+        return _unwrap(
+            compare_contracts.sync_detailed(
+                client=self._client,
+                ids=",".join(ids),
+                window=_enum(CompareContractsWindow, window),
+            )
+        )
+
+    def health_score(self, contract_id: str) -> Any:
+        """Composite health score for one contract."""
+        return _unwrap(get_contract_health_score.sync_detailed(contract_id, client=self._client))
+
+    def summary(self, contract_id: str) -> Any:
+        """One-call rollup of stats, health and recent activity for a contract."""
+        return _unwrap(get_contract_summary.sync_detailed(contract_id, client=self._client))
+
+    def activity(self, *, minutes: int | None = None) -> Any:
+        """Live activity window (default: last 30 minutes)."""
+        return _unwrap(live_activity.sync_detailed(client=self._client, minutes=_value(minutes)))
+
 
 class _Contracts(_SyncResource):
     def list(
@@ -219,6 +324,42 @@ class _Contracts(_SyncResource):
         )
         return _unwrap(register_contract.sync_detailed(client=self._client, body=body))
 
+    # --- issue #556 facade wiring: tags, batch, graph, spec, verification --- #
+    def add_tag(self, contract_id: str, body: ContractTagRequest) -> Any:
+        return _unwrap(
+            add_contract_tag.sync_detailed(contract_id, client=self._client, body=body)
+        )
+
+    def remove_tag(self, contract_id: str, tag: str) -> Any:
+        return _unwrap(remove_contract_tag.sync_detailed(contract_id, tag, client=self._client))
+
+    def batch(self, body: BatchContractsRequest) -> Any:
+        return _unwrap(batch_contracts.sync_detailed(client=self._client, body=body))
+
+    def graph(self, contract_id: str) -> Any:
+        return _unwrap(get_contract_graph.sync_detailed(contract_id, client=self._client))
+
+    def spec(self, contract_id: str) -> Any:
+        return _unwrap(get_contract_spec.sync_detailed(contract_id, client=self._client))
+
+    def upgrades(self, contract_id: str, *, limit: int | None = None) -> Any:
+        return _unwrap(
+            list_contract_upgrades.sync_detailed(
+                contract_id, client=self._client, limit=_value(limit)
+            )
+        )
+
+    def validate(self, body: ValidateContractBody) -> Any:
+        return _unwrap(validate_contract.sync_detailed(client=self._client, body=body))
+
+    def verification(self, contract_id: str) -> Any:
+        return _unwrap(get_contract_verification.sync_detailed(contract_id, client=self._client))
+
+    def verify_source(self, contract_id: str, body: ContractVerificationRequest) -> Any:
+        return _unwrap(
+            verify_contract_source.sync_detailed(contract_id, client=self._client, body=body)
+        )
+
 
 class _Events(_SyncResource):
     def list(
@@ -249,6 +390,32 @@ class _Events(_SyncResource):
         """Short-poll the 20 most recent events for a contract."""
         return _unwrap(stream_contract_events.sync_detailed(contract_id, client=self._client))
 
+    # --- issue #556 facade wiring: global event feeds ---------------------- #
+    def recent(self, *, limit: int | None = None) -> Any:
+        """Most recent events across every tracked contract (``GET /api/v1/events/recent``)."""
+        return _unwrap(recent_events.sync_detailed(client=self._client, limit=_value(limit)))
+
+    def list_all(
+        self,
+        *,
+        cursor: str | None = None,
+        limit: int | None = None,
+        contract_id: str | None = None,
+        type: str | None = None,
+        network: str | None = None,
+    ) -> Any:
+        """Cross-contract event listing (``GET /api/v1/events``)."""
+        return _unwrap(
+            list_all_events.sync_detailed(
+                client=self._client,
+                cursor=_value(cursor),
+                limit=_value(limit),
+                contract_id=_value(contract_id),
+                type_=_enum(ListAllEventsType, type),
+                network=_enum(ListAllEventsNetwork, network),
+            )
+        )
+
 
 class _Invocations(_SyncResource):
     def list(
@@ -276,6 +443,34 @@ class _Invocations(_SyncResource):
                 to=_value(to_ledger),
             )
         )
+
+    # --- issue #556 facade wiring: global invocation feed + trace ---------- #
+    def list_all(
+        self,
+        *,
+        cursor: str | None = None,
+        limit: int | None = None,
+        contract_id: str | None = None,
+        fn: str | None = None,
+        status: str | None = None,
+        network: str | None = None,
+    ) -> Any:
+        """Cross-contract invocation listing (``GET /api/v1/invocations``)."""
+        return _unwrap(
+            list_all_invocations.sync_detailed(
+                client=self._client,
+                cursor=_value(cursor),
+                limit=_value(limit),
+                contract_id=_value(contract_id),
+                fn=_value(fn),
+                status=_enum(ListAllInvocationsStatus, status),
+                network=_enum(ListAllInvocationsNetwork, network),
+            )
+        )
+
+    def trace(self, tx_hash: str) -> Any:
+        """Full call trace for one invocation (``GET /api/v1/invocations/{tx_hash}/trace``)."""
+        return _unwrap(get_invocation_trace.sync_detailed(tx_hash, client=self._client))
 
 
 class _Storage(_SyncResource):
@@ -455,6 +650,155 @@ class _Watchdog(_SyncResource):
             )
         )
 
+    # --- issue #556 facade wiring: uptime + notification subscriptions ----- #
+    def uptime(self, contract_id: str) -> Any:
+        return _unwrap(get_contract_uptime.sync_detailed(contract_id, client=self._client))
+
+    def create_subscription(self, body: CreateAlertSubscription) -> Any:
+        return _unwrap(
+            create_alert_subscription.sync_detailed(client=self._client, body=body)
+        )
+
+    def list_subscriptions(self) -> Any:
+        return _unwrap(list_alert_subscriptions.sync_detailed(client=self._client))
+
+    def delete_subscription(self, subscription_id: str) -> None:
+        _unwrap(delete_alert_subscription.sync_detailed(subscription_id, client=self._client))
+
+
+class _Rules(_SyncResource):
+    """Declarative alert-rule management (``/api/v1/rules*``, issue #556)."""
+
+    def create(self, body: CreateAlertRuleBody) -> Any:
+        return _unwrap(create_alert_rule.sync_detailed(client=self._client, body=body))
+
+    def list(self) -> Any:
+        return _unwrap(list_alert_rules.sync_detailed(client=self._client))
+
+    def delete(self, rule_id: int) -> None:
+        _unwrap(delete_alert_rule.sync_detailed(rule_id, client=self._client))
+
+    def set_enabled(self, rule_id: int, body: SetAlertRuleEnabledBody) -> Any:
+        return _unwrap(
+            set_alert_rule_enabled.sync_detailed(rule_id, client=self._client, body=body)
+        )
+
+    def preview(self, body: PreviewAlertRuleBody) -> Any:
+        return _unwrap(preview_alert_rule.sync_detailed(client=self._client, body=body))
+
+    def validate(self, body: ValidateAlertRuleBody) -> Any:
+        return _unwrap(validate_alert_rule.sync_detailed(client=self._client, body=body))
+
+    def library(self) -> Any:
+        return _unwrap(list_rule_library.sync_detailed(client=self._client))
+
+    def metrics(self) -> Any:
+        return _unwrap(list_rule_metrics.sync_detailed(client=self._client))
+
+
+class _Groups(_SyncResource):
+    """Contract groups (``/api/v1/groups*``); each call passes the owner user id."""
+
+    def create(self, user_id: str, body: CreateGroupBody) -> Any:
+        return _unwrap(
+            create_group.sync_detailed(client=self._client, body=body, x_user_id=user_id)
+        )
+
+    def list(self, user_id: str) -> Any:
+        return _unwrap(list_groups.sync_detailed(client=self._client, x_user_id=user_id))
+
+    def get(self, group_id: str, user_id: str) -> Any:
+        return _unwrap(
+            get_group.sync_detailed(group_id, client=self._client, x_user_id=user_id)
+        )
+
+    def update(self, group_id: str, user_id: str, body: UpdateGroupBody) -> Any:
+        return _unwrap(
+            update_group.sync_detailed(
+                group_id, client=self._client, body=body, x_user_id=user_id
+            )
+        )
+
+    def delete(self, group_id: str, user_id: str) -> None:
+        _unwrap(delete_group.sync_detailed(group_id, client=self._client, x_user_id=user_id))
+
+    def stats(self, group_id: str, user_id: str) -> Any:
+        return _unwrap(
+            get_group_stats.sync_detailed(group_id, client=self._client, x_user_id=user_id)
+        )
+
+    def add_contract(self, group_id: str, user_id: str, body: AddGroupContractBody) -> Any:
+        return _unwrap(
+            add_group_contract.sync_detailed(
+                group_id, client=self._client, body=body, x_user_id=user_id
+            )
+        )
+
+    def remove_contract(self, group_id: str, user_id: str, body: RemoveGroupContractBody) -> Any:
+        return _unwrap(
+            remove_group_contract.sync_detailed(
+                group_id, client=self._client, body=body, x_user_id=user_id
+            )
+        )
+
+    def remove_contract_by_path(self, group_id: str, contract_id: str, user_id: str) -> Any:
+        return _unwrap(
+            remove_group_contract_by_path.sync_detailed(
+                group_id, contract_id, client=self._client, x_user_id=user_id
+            )
+        )
+
+
+class _Notes(_SyncResource):
+    """Per-contract analyst notes (``/api/v1/contracts/{id}/notes``)."""
+
+    def list(self, contract_id: str) -> Any:
+        return _unwrap(list_contract_notes.sync_detailed(contract_id, client=self._client))
+
+    def create(self, contract_id: str, body: ContractNoteRequest) -> Any:
+        return _unwrap(
+            create_contract_note.sync_detailed(contract_id, client=self._client, body=body)
+        )
+
+    def update(self, contract_id: str, note_id: str, body: ContractNoteRequest) -> Any:
+        return _unwrap(
+            update_contract_note.sync_detailed(
+                contract_id, note_id, client=self._client, body=body
+            )
+        )
+
+    def delete(self, contract_id: str, note_id: str) -> None:
+        _unwrap(delete_contract_note.sync_detailed(contract_id, note_id, client=self._client))
+
+
+class _WatchedAccounts(_SyncResource):
+    """Liquidity-pool watched accounts (``/api/v1/watched-accounts``)."""
+
+    def list(self) -> Any:
+        return _unwrap(list_watched_accounts.sync_detailed(client=self._client))
+
+    def add(self, body: AddWatchedAccountBody) -> Any:
+        return _unwrap(add_watched_account.sync_detailed(client=self._client, body=body))
+
+    def delete(self, account_id: str) -> None:
+        _unwrap(delete_watched_account.sync_detailed(account_id, client=self._client))
+
+
+class _Audit(_SyncResource):
+    """Admin audit trail feed (``GET /api/v1/admin/audit``)."""
+
+    def list_events(
+        self, *, since: Any = None, limit: int | None = None, cursor: str | None = None
+    ) -> Any:
+        return _unwrap(
+            list_audit_events.sync_detailed(
+                client=self._client,
+                since=_value(since),
+                limit=_value(limit),
+                cursor=_value(cursor),
+            )
+        )
+
 
 class _Alerts(_SyncResource):
     """Cross-contract alert feed (``/api/v1/alerts``, issue #556)."""
@@ -561,6 +905,11 @@ class Client:
         self.watchdog = _Watchdog(self)
         self.alerts = _Alerts(self)
         self.reports = _Reports(self)
+        self.rules = _Rules(self)
+        self.groups = _Groups(self)
+        self.notes = _Notes(self)
+        self.watched_accounts = _WatchedAccounts(self)
+        self.audit = _Audit(self)
 
     def search(
         self, q: str, *, limit: int | None = None
@@ -603,6 +952,25 @@ class _AsyncStats(_AsyncResource):
             )
         )
 
+    async def compare(self, ids: list[str], *, window: str | None = None) -> Any:
+        """Side-by-side counters for several contracts (issue #556 facade wiring)."""
+        return _unwrap(
+            await compare_contracts.asyncio_detailed(
+                client=self._client,
+                ids=",".join(ids),
+                window=_enum(CompareContractsWindow, window),
+            )
+        )
+
+    async def health_score(self, contract_id: str) -> Any:
+        return _unwrap(await get_contract_health_score.asyncio_detailed(contract_id, client=self._client))
+
+    async def summary(self, contract_id: str) -> Any:
+        return _unwrap(await get_contract_summary.asyncio_detailed(contract_id, client=self._client))
+
+    async def activity(self, *, minutes: int | None = None) -> Any:
+        return _unwrap(await live_activity.asyncio_detailed(client=self._client, minutes=_value(minutes)))
+
 
 class _AsyncContracts(_AsyncResource):
     async def list(
@@ -636,6 +1004,48 @@ class _AsyncContracts(_AsyncResource):
         )
         return _unwrap(await register_contract.asyncio_detailed(client=self._client, body=body))
 
+    # --- issue #556 facade wiring: tags, batch, graph, spec, verification --- #
+    async def add_tag(self, contract_id: str, body: ContractTagRequest) -> Any:
+        return _unwrap(
+            await add_contract_tag.asyncio_detailed(contract_id, client=self._client, body=body)
+        )
+
+    async def remove_tag(self, contract_id: str, tag: str) -> Any:
+        return _unwrap(
+            await remove_contract_tag.asyncio_detailed(contract_id, tag, client=self._client)
+        )
+
+    async def batch(self, body: BatchContractsRequest) -> Any:
+        return _unwrap(await batch_contracts.asyncio_detailed(client=self._client, body=body))
+
+    async def graph(self, contract_id: str) -> Any:
+        return _unwrap(await get_contract_graph.asyncio_detailed(contract_id, client=self._client))
+
+    async def spec(self, contract_id: str) -> Any:
+        return _unwrap(await get_contract_spec.asyncio_detailed(contract_id, client=self._client))
+
+    async def upgrades(self, contract_id: str, *, limit: int | None = None) -> Any:
+        return _unwrap(
+            await list_contract_upgrades.asyncio_detailed(
+                contract_id, client=self._client, limit=_value(limit)
+            )
+        )
+
+    async def validate(self, body: ValidateContractBody) -> Any:
+        return _unwrap(await validate_contract.asyncio_detailed(client=self._client, body=body))
+
+    async def verification(self, contract_id: str) -> Any:
+        return _unwrap(
+            await get_contract_verification.asyncio_detailed(contract_id, client=self._client)
+        )
+
+    async def verify_source(self, contract_id: str, body: ContractVerificationRequest) -> Any:
+        return _unwrap(
+            await verify_contract_source.asyncio_detailed(
+                contract_id, client=self._client, body=body
+            )
+        )
+
 
 class _AsyncEvents(_AsyncResource):
     async def list(
@@ -667,6 +1077,30 @@ class _AsyncEvents(_AsyncResource):
             await stream_contract_events.asyncio_detailed(contract_id, client=self._client)
         )
 
+    # --- issue #556 facade wiring: global event feeds ---------------------- #
+    async def recent(self, *, limit: int | None = None) -> Any:
+        return _unwrap(await recent_events.asyncio_detailed(client=self._client, limit=_value(limit)))
+
+    async def list_all(
+        self,
+        *,
+        cursor: str | None = None,
+        limit: int | None = None,
+        contract_id: str | None = None,
+        type: str | None = None,
+        network: str | None = None,
+    ) -> Any:
+        return _unwrap(
+            await list_all_events.asyncio_detailed(
+                client=self._client,
+                cursor=_value(cursor),
+                limit=_value(limit),
+                contract_id=_value(contract_id),
+                type_=_enum(ListAllEventsType, type),
+                network=_enum(ListAllEventsNetwork, network),
+            )
+        )
+
 
 class _AsyncInvocations(_AsyncResource):
     async def list(
@@ -694,6 +1128,32 @@ class _AsyncInvocations(_AsyncResource):
                 to=_value(to_ledger),
             )
         )
+
+    # --- issue #556 facade wiring: global invocation feed + trace ---------- #
+    async def list_all(
+        self,
+        *,
+        cursor: str | None = None,
+        limit: int | None = None,
+        contract_id: str | None = None,
+        fn: str | None = None,
+        status: str | None = None,
+        network: str | None = None,
+    ) -> Any:
+        return _unwrap(
+            await list_all_invocations.asyncio_detailed(
+                client=self._client,
+                cursor=_value(cursor),
+                limit=_value(limit),
+                contract_id=_value(contract_id),
+                fn=_value(fn),
+                status=_enum(ListAllInvocationsStatus, status),
+                network=_enum(ListAllInvocationsNetwork, network),
+            )
+        )
+
+    async def trace(self, tx_hash: str) -> Any:
+        return _unwrap(await get_invocation_trace.asyncio_detailed(tx_hash, client=self._client))
 
 
 class _AsyncStorage(_AsyncResource):
@@ -884,6 +1344,21 @@ class _AsyncWatchdog(_AsyncResource):
             )
         )
 
+    # --- issue #556 facade wiring: uptime + notification subscriptions ----- #
+    async def uptime(self, contract_id: str) -> Any:
+        return _unwrap(await get_contract_uptime.asyncio_detailed(contract_id, client=self._client))
+
+    async def create_subscription(self, body: CreateAlertSubscription) -> Any:
+        return _unwrap(
+            await create_alert_subscription.asyncio_detailed(client=self._client, body=body)
+        )
+
+    async def list_subscriptions(self) -> Any:
+        return _unwrap(await list_alert_subscriptions.asyncio_detailed(client=self._client))
+
+    async def delete_subscription(self, subscription_id: str) -> None:
+        _unwrap(await delete_alert_subscription.asyncio_detailed(subscription_id, client=self._client))
+
 
 class _AsyncAlerts(_AsyncResource):
     """Cross-contract alert feed (``/api/v1/alerts``, issue #556)."""
@@ -953,6 +1428,152 @@ class _AsyncReports(_AsyncResource):
         _unwrap(await delete_report_subscription.asyncio_detailed(subscription_id, client=self._client))
 
 
+class _AsyncRules(_AsyncResource):
+    """Declarative alert-rule management (``/api/v1/rules*``, issue #556)."""
+
+    async def create(self, body: CreateAlertRuleBody) -> Any:
+        return _unwrap(await create_alert_rule.asyncio_detailed(client=self._client, body=body))
+
+    async def list(self) -> Any:
+        return _unwrap(await list_alert_rules.asyncio_detailed(client=self._client))
+
+    async def delete(self, rule_id: int) -> None:
+        _unwrap(await delete_alert_rule.asyncio_detailed(rule_id, client=self._client))
+
+    async def set_enabled(self, rule_id: int, body: SetAlertRuleEnabledBody) -> Any:
+        return _unwrap(
+            await set_alert_rule_enabled.asyncio_detailed(rule_id, client=self._client, body=body)
+        )
+
+    async def preview(self, body: PreviewAlertRuleBody) -> Any:
+        return _unwrap(await preview_alert_rule.asyncio_detailed(client=self._client, body=body))
+
+    async def validate(self, body: ValidateAlertRuleBody) -> Any:
+        return _unwrap(await validate_alert_rule.asyncio_detailed(client=self._client, body=body))
+
+    async def library(self) -> Any:
+        return _unwrap(await list_rule_library.asyncio_detailed(client=self._client))
+
+    async def metrics(self) -> Any:
+        return _unwrap(await list_rule_metrics.asyncio_detailed(client=self._client))
+
+
+class _AsyncGroups(_AsyncResource):
+    """Contract groups (``/api/v1/groups*``); each call passes the owner user id."""
+
+    async def create(self, user_id: str, body: CreateGroupBody) -> Any:
+        return _unwrap(
+            await create_group.asyncio_detailed(
+                client=self._client, body=body, x_user_id=user_id
+            )
+        )
+
+    async def list(self, user_id: str) -> Any:
+        return _unwrap(await list_groups.asyncio_detailed(client=self._client, x_user_id=user_id))
+
+    async def get(self, group_id: str, user_id: str) -> Any:
+        return _unwrap(
+            await get_group.asyncio_detailed(group_id, client=self._client, x_user_id=user_id)
+        )
+
+    async def update(self, group_id: str, user_id: str, body: UpdateGroupBody) -> Any:
+        return _unwrap(
+            await update_group.asyncio_detailed(
+                group_id, client=self._client, body=body, x_user_id=user_id
+            )
+        )
+
+    async def delete(self, group_id: str, user_id: str) -> None:
+        _unwrap(
+            await delete_group.asyncio_detailed(group_id, client=self._client, x_user_id=user_id)
+        )
+
+    async def stats(self, group_id: str, user_id: str) -> Any:
+        return _unwrap(
+            await get_group_stats.asyncio_detailed(group_id, client=self._client, x_user_id=user_id)
+        )
+
+    async def add_contract(self, group_id: str, user_id: str, body: AddGroupContractBody) -> Any:
+        return _unwrap(
+            await add_group_contract.asyncio_detailed(
+                group_id, client=self._client, body=body, x_user_id=user_id
+            )
+        )
+
+    async def remove_contract(
+        self, group_id: str, user_id: str, body: RemoveGroupContractBody
+    ) -> Any:
+        return _unwrap(
+            await remove_group_contract.asyncio_detailed(
+                group_id, client=self._client, body=body, x_user_id=user_id
+            )
+        )
+
+    async def remove_contract_by_path(self, group_id: str, contract_id: str, user_id: str) -> Any:
+        return _unwrap(
+            await remove_group_contract_by_path.asyncio_detailed(
+                group_id, contract_id, client=self._client, x_user_id=user_id
+            )
+        )
+
+
+class _AsyncNotes(_AsyncResource):
+    """Per-contract analyst notes (``/api/v1/contracts/{id}/notes``)."""
+
+    async def list(self, contract_id: str) -> Any:
+        return _unwrap(await list_contract_notes.asyncio_detailed(contract_id, client=self._client))
+
+    async def create(self, contract_id: str, body: ContractNoteRequest) -> Any:
+        return _unwrap(
+            await create_contract_note.asyncio_detailed(
+                contract_id, client=self._client, body=body
+            )
+        )
+
+    async def update(self, contract_id: str, note_id: str, body: ContractNoteRequest) -> Any:
+        return _unwrap(
+            await update_contract_note.asyncio_detailed(
+                contract_id, note_id, client=self._client, body=body
+            )
+        )
+
+    async def delete(self, contract_id: str, note_id: str) -> None:
+        _unwrap(
+            await delete_contract_note.asyncio_detailed(
+                contract_id, note_id, client=self._client
+            )
+        )
+
+
+class _AsyncWatchedAccounts(_AsyncResource):
+    """Liquidity-pool watched accounts (``/api/v1/watched-accounts``)."""
+
+    async def list(self) -> Any:
+        return _unwrap(await list_watched_accounts.asyncio_detailed(client=self._client))
+
+    async def add(self, body: AddWatchedAccountBody) -> Any:
+        return _unwrap(await add_watched_account.asyncio_detailed(client=self._client, body=body))
+
+    async def delete(self, account_id: str) -> None:
+        _unwrap(await delete_watched_account.asyncio_detailed(account_id, client=self._client))
+
+
+class _AsyncAudit(_AsyncResource):
+    """Admin audit trail feed (``GET /api/v1/admin/audit``)."""
+
+    async def list_events(
+        self, *, since: Any = None, limit: int | None = None, cursor: str | None = None
+    ) -> Any:
+        return _unwrap(
+            await list_audit_events.asyncio_detailed(
+                client=self._client,
+                since=_value(since),
+                limit=_value(limit),
+                cursor=_value(cursor),
+            )
+        )
+
+
 class AsyncClient:
     """Asynchronous (``httpx.AsyncClient``) client for the Sorolens API.
 
@@ -989,6 +1610,11 @@ class AsyncClient:
         self.watchdog = _AsyncWatchdog(self)
         self.alerts = _AsyncAlerts(self)
         self.reports = _AsyncReports(self)
+        self.rules = _AsyncRules(self)
+        self.groups = _AsyncGroups(self)
+        self.notes = _AsyncNotes(self)
+        self.watched_accounts = _AsyncWatchedAccounts(self)
+        self.audit = _AsyncAudit(self)
 
     async def search(
         self, q: str, *, limit: int | None = None

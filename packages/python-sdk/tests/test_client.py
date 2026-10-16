@@ -117,3 +117,22 @@ def test_api_key_get_and_rotate(client):
     assert meta.key_prefix == "sk_ci"
     rotated = client.api_keys.rotate("key-1")
     assert rotated.key.startswith("sk_")
+
+
+# ---- facade wiring for the remaining v1 surfaces (issue #556) -------------
+
+
+def test_alert_rules_list(client):
+    assert client.rules.list().rules == []
+
+
+def test_groups_list(client):
+    assert client.groups.list("user-1").groups == []
+
+
+def test_watched_accounts_list(client):
+    assert client.watched_accounts.list().watched_accounts == []
+
+
+def test_recent_events(client):
+    assert client.events.recent(limit=5).events == []
