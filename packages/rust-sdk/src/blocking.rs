@@ -85,6 +85,7 @@ fn build_request(
     let method = match spec.method {
         HttpMethod::Get => reqwest::Method::GET,
         HttpMethod::Post => reqwest::Method::POST,
+        HttpMethod::Patch => reqwest::Method::PATCH,
         HttpMethod::Delete => reqwest::Method::DELETE,
     };
     let mut builder = http.request(method, url);

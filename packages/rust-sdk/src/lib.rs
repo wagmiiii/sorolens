@@ -84,16 +84,25 @@
 //!
 //! | Module | Endpoints |
 //! | --- | --- |
-//! | `contracts` | list, get, register |
-//! | `events` | list, stream |
-//! | `invocations` | list |
+//! | `contracts` | list, get, register, batch, validate, compare |
+//! | `contract_details` | spec, summary, graph, health-score, verification, upgrades, tags |
+//! | `events` | list, stream; `activity` adds global/recent listings |
+//! | `invocations` | list, global list, trace |
 //! | `storage` | list, snapshot |
-//! | `stats` | global stats, contract stats, forecast |
-//! | `watchdog` | stats, alerts, monitored contracts, health checks |
+//! | `stats` | global stats, contract stats, forecast, live activity |
+//! | `watchdog` | stats, alerts, monitored contracts, health checks, uptime |
+//! | `alert_rules` | rule CRUD, validate/preview, metrics, library, subscriptions |
+//! | `alerts` | cross-contract alert feed |
+//! | `reports` | SLA reports and digest subscriptions |
+//! | `api_keys` | key listing, creation, revocation, rotation |
+//! | `groups` | group CRUD and group stats |
+//! | `notes` | contract note CRUD |
+//! | `watchlist` | watchlist and watched accounts |
 //! | `health` | `/health`, `/readyz` |
 //!
-//! Admin API-key management and the per-user watchlist routes are not covered
-//! yet; they are tracked separately.
+//! Admin API-key management (`/api/v1/admin/api-keys*`) is intentionally not
+//! exposed; see `scripts/sdk-coverage-allowlist.json` for the documented
+//! exclusions enforced by the coverage gate (issue #556).
 //!
 //! ## Errors
 //!
@@ -115,17 +124,27 @@ mod request;
 mod blocking;
 
 #[cfg(any(feature = "async", feature = "blocking"))]
+mod activity;
+#[cfg(any(feature = "async", feature = "blocking"))]
 mod alerts;
 #[cfg(any(feature = "async", feature = "blocking"))]
+mod alert_rules;
+#[cfg(any(feature = "async", feature = "blocking"))]
 mod api_keys;
+#[cfg(any(feature = "async", feature = "blocking"))]
+mod contract_details;
 #[cfg(any(feature = "async", feature = "blocking"))]
 mod contracts;
 #[cfg(any(feature = "async", feature = "blocking"))]
 mod events;
 #[cfg(any(feature = "async", feature = "blocking"))]
+mod groups;
+#[cfg(any(feature = "async", feature = "blocking"))]
 mod health;
 #[cfg(any(feature = "async", feature = "blocking"))]
 mod invocations;
+#[cfg(any(feature = "async", feature = "blocking"))]
+mod notes;
 #[cfg(any(feature = "async", feature = "blocking"))]
 mod reports;
 #[cfg(any(feature = "async", feature = "blocking"))]
@@ -134,6 +153,8 @@ mod stats;
 mod storage;
 #[cfg(any(feature = "async", feature = "blocking"))]
 mod watchdog;
+#[cfg(any(feature = "async", feature = "blocking"))]
+mod watchlist;
 
 pub use client::{ClientConfig, ClientConfigBuilder, DEFAULT_BASE_URL, DEFAULT_USER_AGENT};
 pub use error::{ApiError, Error};
@@ -145,6 +166,10 @@ pub use client::{Client, ClientBuilder};
 #[cfg(feature = "blocking")]
 pub use blocking::{BlockingClient, BlockingClientBuilder};
 
+#[cfg(any(feature = "async", feature = "blocking"))]
+pub use activity::{
+    ListAllEventsParams, ListAllInvocationsParams, ListAuditEventsParams,
+};
 #[cfg(any(feature = "async", feature = "blocking"))]
 pub use alerts::ListAlertsParams;
 #[cfg(any(feature = "async", feature = "blocking"))]
@@ -166,6 +191,8 @@ pub use watchdog::{
     GetWatchdogStatsParams, ListContractAlertsParams, ListContractHealthChecksParams,
     ListMonitoredContractsParams, ListWatchdogAlertsParams,
 };
+#[cfg(any(feature = "async", feature = "blocking"))]
+pub use watchlist::ListWatchlistParams;
 
 /// The crate version, taken from `Cargo.toml`.
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");

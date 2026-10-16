@@ -14,6 +14,7 @@ use crate::error::Error;
 pub(crate) enum HttpMethod {
     Get,
     Post,
+    Patch,
     Delete,
 }
 
@@ -46,6 +47,29 @@ impl RequestSpec {
             query: Vec::new(),
             body: None,
         }
+    }
+
+    /// Builds a `DELETE` request for `path` with a JSON body.
+    pub(crate) fn delete_with_body<T: Serialize>(
+        path: impl Into<String>,
+        body: &T,
+    ) -> Result<Self, Error> {
+        Ok(Self {
+            method: HttpMethod::Delete,
+            path: path.into(),
+            query: Vec::new(),
+            body: Some(serde_json::to_value(body)?),
+        })
+    }
+
+    /// Builds a `PATCH` request for `path` with a JSON body.
+    pub(crate) fn patch<T: Serialize>(path: impl Into<String>, body: &T) -> Result<Self, Error> {
+        Ok(Self {
+            method: HttpMethod::Patch,
+            path: path.into(),
+            query: Vec::new(),
+            body: Some(serde_json::to_value(body)?),
+        })
     }
 
     /// Builds a `POST` request for `path` with a JSON body.
