@@ -36,6 +36,7 @@
           "v2LiveActivity",
           "v2RecentEvents",
           "v2RegisterContract",
+          "v2DeleteContract",
           "v2RemoveFromWatchlist",
           "v2RevokeAPIKey",
           "v2RotateAPIKey",
@@ -185,6 +186,7 @@
         "reason": "Not part of this SDK's implemented surface yet.",
         "operations": [
           "batchContracts",
+          "deleteContract",
           "compareContracts",
           "listRuleLibrary"
         ]
@@ -215,6 +217,27 @@
           "downloadExportV2",
           "getExportJob",
           "getExportJobV2"
+        ]
+      },
+      {
+        "reason": "Alert lifecycle and maintenance window operations (issues #789, #790) are control-plane operations not yet exposed by the hand-written SDK surface.",
+        "operations": [
+          "acknowledgeAlert",
+          "createMaintenanceWindow",
+          "deleteMaintenanceWindow",
+          "getAlertCounts",
+          "getMaintenanceWindow",
+          "listMaintenanceWindows",
+          "resolveAlert",
+          "snoozeAlert",
+          "updateMaintenanceWindow"
+        ]
+      },
+      {
+        "reason": "API key usage and quota tracking (issue #792) is a control-plane feature not yet exposed by the hand-written SDK surface.",
+        "operations": [
+          "getApiKeyUsage",
+          "v2GetApiKeyUsage"
         ]
       }
     ],
@@ -253,6 +276,7 @@
           "v2LiveActivity",
           "v2RecentEvents",
           "v2RegisterContract",
+          "v2DeleteContract",
           "v2RemoveFromWatchlist",
           "v2RevokeAPIKey",
           "v2RotateAPIKey",
@@ -275,19 +299,15 @@
         "reason": "Alert rules and alert subscriptions are surfaced through the webhooks/notifications product, not this SDK yet.",
         "operations": [
           "createAlertRule",
-          "createAlertSubscription",
           "deleteAlertRule",
-          "deleteAlertSubscription",
           "listAlertRules",
-          "listAlertSubscriptions",
-          "listAlerts",
           "previewAlertRule",
           "setAlertRuleEnabled",
           "validateAlertRule"
         ]
       },
       {
-        "reason": "SOL/SLA reports, uptime, summary, spec and contract-graph endpoints are report/analytics features not yet implemented in this SDK.",
+        "reason": "Event schema, contract spec, and uptime endpoints are not yet exposed by this SDK.",
         "operations": [
           "createReportSubscription",
           "deleteReportSubscription",
@@ -298,10 +318,7 @@
           "getContractReportHistory",
           "getContractSLABadge",
           "getContractSpec",
-          "getContractSummary",
-          "getContractUptime",
-          "listReportSubscriptions",
-          "unsubscribeReport"
+          "getContractUptime"
         ]
       },
       {
@@ -375,9 +392,7 @@
           "listAllEvents",
           "listAuditEvents",
           "listAuditEventsRoot",
-          "listFailedEvents",
           "recentEvents",
-          "requeueFailedEvent",
           "streamAllEvents",
           "subscribeEventsWS"
         ]
@@ -396,7 +411,6 @@
         "operations": [
           "getContractVerification",
           "getContractWasm",
-          "listContractUpgrades",
           "validateContract",
           "verifyContractSource"
         ]
@@ -405,7 +419,7 @@
         "reason": "Not part of this SDK's implemented surface yet.",
         "operations": [
           "batchContracts",
-          "compareContracts",
+          "deleteContract",
           "listRuleLibrary"
         ]
       },
@@ -436,6 +450,27 @@
           "getExportJob",
           "getExportJobV2"
         ]
+      },
+      {
+        "reason": "Alert lifecycle and maintenance window operations (issues #789, #790) are control-plane operations not yet exposed by the hand-written SDK surface.",
+        "operations": [
+          "acknowledgeAlert",
+          "createMaintenanceWindow",
+          "deleteMaintenanceWindow",
+          "getAlertCounts",
+          "getMaintenanceWindow",
+          "listMaintenanceWindows",
+          "resolveAlert",
+          "snoozeAlert",
+          "updateMaintenanceWindow"
+        ]
+      },
+      {
+        "reason": "API key usage and quota tracking (issue #792) is a control-plane feature not yet exposed by the hand-written SDK surface.",
+        "operations": [
+          "getApiKeyUsage",
+          "v2GetApiKeyUsage"
+        ]
       }
     ],
     "go": [
@@ -463,6 +498,7 @@
           "listAuditEventsRoot",
           "registerContract",
           "batchContracts",
+          "deleteContract",
           "addContractTag",
           "removeContractTag",
           "listContractNotes",
@@ -515,6 +551,7 @@
           "v2RecentEvents",
           "v2ListContracts",
           "v2RegisterContract",
+          "v2DeleteContract",
           "v2ValidateContract",
           "v2GetContract",
           "v2ListEvents",
@@ -616,6 +653,27 @@
           "downloadExportV2",
           "getExportJob",
           "getExportJobV2"
+        ]
+      },
+      {
+        "reason": "Alert lifecycle and maintenance window operations (issues #789, #790) are control-plane operations not yet exposed by the hand-written SDK surface.",
+        "operations": [
+          "acknowledgeAlert",
+          "createMaintenanceWindow",
+          "deleteMaintenanceWindow",
+          "getAlertCounts",
+          "getMaintenanceWindow",
+          "listMaintenanceWindows",
+          "resolveAlert",
+          "snoozeAlert",
+          "updateMaintenanceWindow"
+        ]
+      },
+      {
+        "reason": "API key usage and quota tracking (issue #792) is a control-plane feature not yet exposed by the hand-written SDK surface.",
+        "operations": [
+          "getApiKeyUsage",
+          "v2GetApiKeyUsage"
         ]
       }
     ],
@@ -636,6 +694,7 @@
           "listAuditEventsRoot",
           "registerContract",
           "batchContracts",
+          "deleteContract",
           "addContractTag",
           "removeContractTag",
           "listContractNotes",
@@ -688,6 +747,7 @@
           "v2RecentEvents",
           "v2ListContracts",
           "v2RegisterContract",
+          "v2DeleteContract",
           "v2ValidateContract",
           "v2GetContract",
           "v2ListEvents",
@@ -789,6 +849,27 @@
           "downloadExportV2",
           "getExportJob",
           "getExportJobV2"
+        ]
+      },
+      {
+        "reason": "Alert lifecycle and maintenance window operations (issues #789, #790) are control-plane operations not yet exposed by the hand-written SDK surface.",
+        "operations": [
+          "acknowledgeAlert",
+          "createMaintenanceWindow",
+          "deleteMaintenanceWindow",
+          "getAlertCounts",
+          "getMaintenanceWindow",
+          "listMaintenanceWindows",
+          "resolveAlert",
+          "snoozeAlert",
+          "updateMaintenanceWindow"
+        ]
+      },
+      {
+        "reason": "API key usage and quota tracking (issue #792) is a control-plane feature not yet exposed by the hand-written SDK surface.",
+        "operations": [
+          "getApiKeyUsage",
+          "v2GetApiKeyUsage"
         ]
       }
     ]

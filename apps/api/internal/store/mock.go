@@ -48,15 +48,20 @@ type MockStore struct {
 	alertRules            []AlertRule
 	contractNotes         map[string][]ContractNote
 	watchedAccounts       map[string]WatchedAccount
+	maintenanceWindows    map[int64]MaintenanceWindow
+	maintenanceWindowSeq  int64
+	contractTokens        map[string]TokenMetadata
 	*MockExportJobStore
 
 	// auditMu guards auditEvents: the audit middleware writes asynchronously.
-	auditMu     sync.Mutex
-	auditEvents []AuditEvent
+	auditMu      sync.Mutex
+	auditEvents  []AuditEvent
+	usageRecords []APIKeyUsageRecord
 
 	// Error injection
 	UpsertContractErr                 error
 	GetContractErr                    error
+	UntrackContractErr                error
 	ListContractsErr                  error
 	DeleteContractsErr                error
 	SetContractLabelErr               error
@@ -169,6 +174,7 @@ func NewMockStore() *MockStore {
 		failedEvents:          make(map[int64]FailedEvent),
 		labels:                make([]Label, 0),
 		watchedAccounts:       make(map[string]WatchedAccount),
+		contractTokens:        make(map[string]TokenMetadata),
 		MockExportJobStore:    NewMockExportJobStore(),
 	}
 }
@@ -183,6 +189,9 @@ func (m *MockStore) UpsertContract(_ context.Context, c Contract) error {
 		c.AddedAt = time.Now()
 	}
 	m.contracts[c.ID] = c
+	if c.Token != nil {
+		m.contractTokens[c.ID] = *c.Token
+	}
 	return nil
 }
 
@@ -195,7 +204,23 @@ func (m *MockStore) GetContract(_ context.Context, contractID string) (Contract,
 		return Contract{}, ErrNotFound
 	}
 	c.Tags = m.tagsFor(contractID)
+	if t, ok := m.contractTokens[contractID]; ok {
+		c.Token = &t
+	}
 	return c, nil
+}
+
+func (m *MockStore) UntrackContract(_ context.Context, contractID string) error {
+	if m.UntrackContractErr != nil {
+		return m.UntrackContractErr
+	}
+	c, ok := m.contracts[contractID]
+	if !ok {
+		return ErrNotFound
+	}
+	c.Status = "paused"
+	m.contracts[contractID] = c
+	return nil
 }
 
 func (m *MockStore) ListContracts(_ context.Context, cursor string, limit int, f ContractFilters) ([]Contract, string, error) {
@@ -204,6 +229,8 @@ func (m *MockStore) ListContracts(_ context.Context, cursor string, limit int, f
 	}
 	if limit <= 0 {
 		limit = 50
+	} else if limit > 200 {
+		limit = 200
 	}
 	var out []Contract
 	for _, c := range m.contracts {
@@ -220,6 +247,9 @@ func (m *MockStore) ListContracts(_ context.Context, cursor string, limit int, f
 			continue
 		}
 		c.Tags = m.tagsFor(c.ID)
+		if t, ok := m.contractTokens[c.ID]; ok {
+			c.Token = &t
+		}
 		out = append(out, c)
 	}
 	sort.Slice(out, func(i, j int) bool {
@@ -453,6 +483,8 @@ func (m *MockStore) ListEvents(_ context.Context, contractID, cursor string, lim
 	}
 	if limit <= 0 {
 		limit = 50
+	} else if limit > 200 {
+		limit = 200
 	}
 	var out []Event
 	for _, e := range m.events {
@@ -545,6 +577,8 @@ func (m *MockStore) ListInvocations(_ context.Context, contractID, cursor string
 	}
 	if limit <= 0 {
 		limit = 50
+	} else if limit > 200 {
+		limit = 200
 	}
 	var out []Invocation
 	for _, inv := range m.invocations {
@@ -558,6 +592,9 @@ func (m *MockStore) ListInvocations(_ context.Context, contractID, cursor string
 			continue
 		}
 		if f.FunctionName != "" && inv.FunctionName != f.FunctionName {
+			continue
+		}
+		if f.FailureCategory != "" && inv.FailureCategory != f.FailureCategory {
 			continue
 		}
 		out = append(out, inv)
@@ -644,6 +681,8 @@ func (m *MockStore) ListAllInvocations(_ context.Context, cursorLedger uint32, c
 	}
 	if limit <= 0 {
 		limit = 50
+	} else if limit > 200 {
+		limit = 200
 	}
 	out := make([]Invocation, 0, len(m.invocations))
 	for _, inv := range m.invocations {
@@ -669,6 +708,9 @@ func (m *MockStore) ListAllInvocations(_ context.Context, cursorLedger uint32, c
 			continue
 		}
 		if f.Until != nil && inv.LedgerClosedAt.After(*f.Until) {
+			continue
+		}
+		if f.FailureCategory != "" && inv.FailureCategory != f.FailureCategory {
 			continue
 		}
 		out = append(out, inv)
@@ -709,6 +751,8 @@ func (m *MockStore) ListStorageEntries(_ context.Context, contractID, cursor str
 	}
 	if limit <= 0 {
 		limit = 50
+	} else if limit > 200 {
+		limit = 200
 	}
 	var out []StorageEntry
 	for _, se := range m.storageEntries {
@@ -760,12 +804,18 @@ func (m *MockStore) GetContractInvocationStats(_ context.Context, contractID str
 }
 
 func invocationWindowStats(invocations []Invocation) InvocationWindowStats {
-	stats := InvocationWindowStats{InvocationCount: int64(len(invocations))}
+	stats := InvocationWindowStats{
+		InvocationCount:    int64(len(invocations)),
+		FailuresByCategory: NewFailureCounts(),
+	}
 	fees := make([]float64, 0, len(invocations))
 	cpus := make([]float64, 0, len(invocations))
 	for _, inv := range invocations {
 		if inv.Status != "SUCCESS" {
 			stats.FailedInvocations++
+		}
+		if inv.FailureCategory != "" {
+			AddFailureCount(stats.FailuresByCategory, inv.FailureCategory, 1)
 		}
 		fees = append(fees, float64(inv.ResourceFeeCharged))
 		cpus = append(cpus, float64(inv.CPUInsn))
@@ -1445,7 +1495,15 @@ func (m *MockStore) SearchContracts(_ context.Context, query string, limit int) 
 	searchPattern := strings.ToLower(query)
 
 	for _, c := range m.contracts {
-		if strings.Contains(strings.ToLower(c.ID), searchPattern) || strings.Contains(strings.ToLower(c.Label), searchPattern) {
+		c.Tags = m.tagsFor(c.ID)
+		if t, ok := m.contractTokens[c.ID]; ok {
+			c.Token = &t
+		}
+		match := strings.Contains(strings.ToLower(c.ID), searchPattern) || strings.Contains(strings.ToLower(c.Label), searchPattern)
+		if !match && c.Token != nil {
+			match = strings.Contains(strings.ToLower(c.Token.AssetCode), searchPattern) || strings.Contains(strings.ToLower(c.Token.Symbol), searchPattern)
+		}
+		if match {
 			results = append(results, c)
 		}
 	}
@@ -1530,3 +1588,26 @@ func (m *MockStore) SearchFunctions(_ context.Context, query string, limit int) 
 	}
 	return matched, nil
 }
+
+// ---- ContractTokenStore -----------------------------------------------------
+
+func (m *MockStore) UpsertContractToken(_ context.Context, contractID string, tok TokenMetadata) error {
+	if contractID == "" {
+		return errors.New("contract_id is required")
+	}
+	m.contractTokens[contractID] = tok
+	if c, ok := m.contracts[contractID]; ok {
+		c.Token = &tok
+		m.contracts[contractID] = c
+	}
+	return nil
+}
+
+func (m *MockStore) GetContractToken(_ context.Context, contractID string) (TokenMetadata, error) {
+	tok, ok := m.contractTokens[contractID]
+	if !ok {
+		return TokenMetadata{}, ErrNotFound
+	}
+	return tok, nil
+}
+
